@@ -2,90 +2,205 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
-import { X, Save, RotateCcw, Trash2 } from "lucide-react";
+import {
+  X, Save, RotateCcw, Trash2, Lock, Unlock,
+} from "lucide-react";
 
 const Whiteboard = ({ onClose }: { onClose: () => void }) => {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const whiteboardRef = useRef<HTMLDivElement>(null);
+
+  const [position, setPosition] = useState({ x: 100, y: 100 });
+  const [dragging, setDragging] = useState(false);
+  const [locked, setLocked] = useState(false);
+  // Remove minimize state entirely
+
+  const dragOffset = useRef({ x: 0, y: 0 });
+
+  const [width, setWidth] = useState(800);
+  const [height, setHeight] = useState(500);
+
+  const [strokeColor, setStrokeColor] = useState("black");
+  const [isEraser, setIsEraser] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    // Disable eraser on mount, so default mode is draw with white
+    canvasRef.current?.eraseMode(false);
   }, []);
 
-  if (!isMounted) return null;
+  // Drag Handling
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (locked) return;
+    setDragging(true);
+    dragOffset.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    };
+  };
 
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!dragging) return;
+    setPosition({
+      x: e.clientX - dragOffset.current.x,
+      y: e.clientY - dragOffset.current.y,
+    });
+  };
+
+  const handleMouseUp = () => setDragging(false);
+
+  useEffect(() => {
+    if (dragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [dragging]);
+
+  // Resize Handling
+  const handleResize = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = width;
+    const startHeight = height;
+
+    const doResize = (event: MouseEvent) => {
+      let newWidth = startWidth + (event.clientX - startX);
+      let newHeight = startHeight + (event.clientY - startY);
+
+      // Minimum sizes so it never gets too small
+      newWidth = Math.max(300, newWidth);
+      newHeight = Math.max(200, newHeight);
+
+      setWidth(newWidth);
+      setHeight(newHeight);
+    };
+
+    const stopResize = () => {
+      window.removeEventListener("mousemove", doResize);
+      window.removeEventListener("mouseup", stopResize);
+    };
+
+    window.addEventListener("mousemove", doResize);
+    window.addEventListener("mouseup", stopResize);
+  };
+
+  // Controls
   const exportImage = async () => {
-    if (!canvasRef.current) return;
     try {
-      const data = await canvasRef.current.exportImage("png");
+      const data = await canvasRef.current?.exportImage("png");
+      if (!data) return;
       const link = document.createElement("a");
       link.href = data;
       link.download = "whiteboard.png";
       link.click();
-    } catch (error) {
-      console.error("Export failed:", error);
+    } catch (err) {
+      console.error("Export failed", err);
     }
   };
 
-  const clearCanvas = () => {
-    if (!canvasRef.current) return;
-    canvasRef.current.clearCanvas();
-  };
+  const clearCanvas = () => canvasRef.current?.clearCanvas();
+  const undo = () => canvasRef.current?.undo();
 
-  const undo = () => {
-    if (!canvasRef.current) return;
-    canvasRef.current.undo();
+  const toggleEraser = () => {
+    const mode = !isEraser;
+    canvasRef.current?.eraseMode(mode);
+    setIsEraser(mode);
   };
 
   return (
-    <div className="fixed left-0 top-0 z-[1000] flex size-full flex-col items-center justify-center bg-black bg-opacity-80 p-4">
-      {/* Top Controls */}
-      <div className="mb-4 flex w-full max-w-6xl justify-end">
-        <button
-          onClick={onClose}
-          className="rounded-full bg-red-600 p-2 text-white hover:bg-red-700"
-        >
-          <X size={20} />
-        </button>
+    <div
+      ref={whiteboardRef}
+      className="fixed z-[1000] bg-black bg-opacity-90 rounded shadow-lg"
+      style={{
+        top: position.y,
+        left: position.x,
+        width,
+        height,
+        userSelect: "none",
+        overflow: "hidden",
+      }}
+    >
+      {/* Header */}
+      <div
+        className="flex items-center justify-between px-4 py-2 bg-gray-800 text-white cursor-move select-none"
+        onMouseDown={handleMouseDown}
+      >
+        <span className="text-sm font-semibold">✏️ VSTUDY Whiteboard</span>
+        <div className="flex gap-2">
+          <button onClick={() => setLocked((prev) => !prev)} title={locked ? "Unlock drag" : "Lock drag"}>
+            {locked ? <Unlock size={16} /> : <Lock size={16} />}
+          </button>
+          {/* Removed minimize button */}
+          <button onClick={onClose} title="Close whiteboard">
+            <X size={16} />
+          </button>
+        </div>
       </div>
 
-      {/* Whiteboard Canvas */}
-      <ReactSketchCanvas
-        ref={canvasRef}
-        style={{
-          border: "0.0625rem solid #ccc",
-          borderRadius: "0.5rem",
-        }}
-        width="90%"
-        height="70%"
-        strokeWidth={4}
-        strokeColor="white"
+      {/* Canvas */}
+      <div className="w-full" style={{ height: height * 0.75 }}>
+        <ReactSketchCanvas
+          ref={canvasRef}
+          style={{
+            border: "2px solid #ccc",
+            backgroundColor: "#000",
+          }}
+          width={`${width}px`}
+          height={`${height * 0.75}px`}
+          strokeWidth={4}
+          strokeColor={strokeColor}
+          eraserWidth={8}
+        />
+      </div>
+
+      {/* Controls */}
+      <div className="flex flex-wrap justify-between items-center p-3 bg-gray-900 text-white text-sm gap-3">
+        <div className="flex items-center gap-3">
+          🎨 Color:
+          <input
+            type="color"
+            value={strokeColor}
+            onChange={(e) => {
+              setStrokeColor(e.target.value);
+              setIsEraser(false);
+              canvasRef.current?.eraseMode(false);
+            }}
+          />
+          <button
+            onClick={toggleEraser}
+            className={`px-2 py-1 rounded ${
+              isEraser ? "bg-red-600" : "bg-gray-600"
+            }`}
+          >
+            {isEraser ? "Eraser On" : "Eraser Off"}
+          </button>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={exportImage} className="bg-green-600 hover:bg-green-700 px-2 py-1 rounded">
+            <Save size={14} className="inline" /> Save
+          </button>
+          <button onClick={undo} className="bg-yellow-600 hover:bg-yellow-700 px-2 py-1 rounded">
+            <RotateCcw size={14} className="inline" /> Undo
+          </button>
+          <button onClick={clearCanvas} className="bg-gray-600 hover:bg-gray-700 px-2 py-1 rounded">
+            <Trash2 size={14} className="inline" /> Clear
+          </button>
+        </div>
+      </div>
+
+      {/* Resize Handle */}
+      <div
+        onMouseDown={handleResize}
+        className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize bg-white"
+        title="Resize whiteboard"
       />
-
-      {/* Bottom Controls */}
-      <div className="mt-4 flex gap-4">
-        <button
-          onClick={exportImage}
-          className="flex items-center gap-2 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-        >
-          <Save size={18} />
-          Save
-        </button>
-        <button
-          onClick={undo}
-          className="flex items-center gap-2 rounded bg-yellow-600 px-4 py-2 text-white hover:bg-yellow-700"
-        >
-          <RotateCcw size={18} />
-          Undo
-        </button>
-        <button
-          onClick={clearCanvas}
-          className="flex items-center gap-2 rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
-        >
-          <Trash2 size={18} />
-          Clear
-        </button>
-      </div>
     </div>
   );
 };
