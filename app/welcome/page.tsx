@@ -50,16 +50,14 @@ const WelcomePage = () => {
           }}
           className="group relative cursor-pointer border-none bg-transparent p-0 font-mono text-base font-light uppercase outline-none"
         >
-          <span className="duration-[600ms] ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-[250ms] absolute left-0 top-0 size-full translate-y-0.5 rounded-lg bg-black bg-opacity-25 transition group-hover:translate-y-1 group-active:translate-y-px"></span>
-
+          <span className="duration-700 ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-200 absolute left-0 top-0 size-full translate-y-0.5 rounded-lg bg-black bg-opacity-25 transition group-hover:translate-y-1 group-active:translate-y-px"></span>
           <span className="absolute left-0 top-0 size-full rounded-lg bg-gradient-to-l from-[hsl(217,33%,16%)] via-[hsl(217,33%,32%)] to-[hsl(217,33%,16%)]"></span>
-
-          <div className="duration-[600ms] ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-[250ms] relative flex -translate-y-1 items-center justify-between gap-3 rounded-lg bg-gradient-to-r from-[#f27121] via-[#e94057] to-[#8a2387] px-6 py-3 text-lg text-white brightness-100 transition group-hover:-translate-y-1.5 group-hover:brightness-110 group-active:-translate-y-0.5">
+          <div className="duration-700 ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-200 relative flex -translate-y-1 items-center justify-between gap-3 rounded-lg bg-gradient-to-r from-[#f27121] via-[#e94057] to-[#8a2387] px-6 py-3 text-lg text-white brightness-100 transition group-hover:-translate-y-1.5 group-hover:brightness-110 group-active:-translate-y-0.5">
             <span className="select-none">Start Studying</span>
             <svg
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="duration-250 -mr-1 ml-2 size-5 transition group-hover:translate-x-1"
+              className="duration-200 -mr-1 ml-2 size-5 transition group-hover:translate-x-1"
             >
               <path
                 clipRule="evenodd"
@@ -75,11 +73,9 @@ const WelcomePage = () => {
           onClick={() => router.push("/learn-more")}
           className="group relative cursor-pointer border-none bg-transparent p-0 font-mono text-base font-light uppercase outline-none"
         >
-          <span className="duration-[600ms] ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-[250ms] absolute left-0 top-0 size-full translate-y-0.5 rounded-lg bg-black bg-opacity-25 transition group-hover:translate-y-1 group-active:translate-y-px"></span>
-
+          <span className="duration-700 ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-200 absolute left-0 top-0 size-full translate-y-0.5 rounded-lg bg-black bg-opacity-25 transition group-hover:translate-y-1 group-active:translate-y-px"></span>
           <span className="absolute left-0 top-0 size-full rounded-lg bg-gradient-to-l from-[hsl(217,33%,16%)] via-[hsl(217,33%,32%)] to-[hsl(217,33%,16%)]"></span>
-
-          <div className="duration-[600ms] ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-[250ms] relative flex -translate-y-1 items-center justify-between gap-3 rounded-lg bg-gradient-to-r from-[#21d4fd] to-[#b721ff] px-6 py-3 text-lg text-white brightness-100 transition group-hover:-translate-y-1.5 group-hover:brightness-110 group-active:-translate-y-0.5">
+          <div className="duration-700 ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-200 relative flex -translate-y-1 items-center justify-between gap-3 rounded-lg bg-gradient-to-r from-[#21d4fd] to-[#b721ff] px-6 py-3 text-lg text-white brightness-100 transition group-hover:-translate-y-1.5 group-hover:brightness-110 group-active:-translate-y-0.5">
             <span className="select-none">Learn More</span>
           </div>
         </button>
@@ -89,11 +85,9 @@ const WelcomePage = () => {
           onClick={() => router.push("/about")}
           className="group relative cursor-pointer border-none bg-transparent p-0 font-mono text-base font-light uppercase outline-none"
         >
-          <span className="duration-[600ms] ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-[250ms] absolute left-0 top-0 size-full translate-y-0.5 rounded-lg bg-black bg-opacity-25 transition group-hover:translate-y-1 group-active:translate-y-px"></span>
-
+          <span className="duration-700 ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-200 absolute left-0 top-0 size-full translate-y-0.5 rounded-lg bg-black bg-opacity-25 transition group-hover:translate-y-1 group-active:translate-y-px"></span>
           <span className="absolute left-0 top-0 size-full rounded-lg bg-gradient-to-l from-[hsl(217,33%,16%)] via-[hsl(217,33%,32%)] to-[hsl(217,33%,16%)]"></span>
-
-          <div className="duration-[600ms] ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-[250ms] relative flex -translate-y-1 items-center justify-between gap-3 rounded-lg bg-gradient-to-r from-[#ff512f] to-[#dd2476] px-6 py-3 text-lg text-white brightness-100 transition group-hover:-translate-y-1.5 group-hover:brightness-110 group-active:-translate-y-0.5">
+          <div className="duration-700 ease-[cubic-bezier(0.3,0.7,0.4,1)] group-hover:duration-200 relative flex -translate-y-1 items-center justify-between gap-3 rounded-lg bg-gradient-to-r from-[#ff512f] to-[#dd2476] px-6 py-3 text-lg text-white brightness-100 transition group-hover:-translate-y-1.5 group-hover:brightness-110 group-active:-translate-y-0.5">
             <span className="select-none">About Us</span>
           </div>
         </button>
