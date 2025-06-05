@@ -1,14 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const HomeRedirect: React.FC = () => {
   const router = useRouter();
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    router.push("/welcome");
-  }, [router]);
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (hasMounted) {
+      router.push("/welcome");
+    }
+  }, [hasMounted, router]);
 
   return null;
 };
