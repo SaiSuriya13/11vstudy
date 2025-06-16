@@ -27,7 +27,6 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     canvasRef.current?.eraseMode(false);
   }, []);
 
-  // Drag Functions
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (locked) return;
     setDragging(true);
@@ -37,17 +36,17 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     };
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!dragging) return;
-    setPosition({
-      x: e.clientX - dragOffset.current.x,
-      y: e.clientY - dragOffset.current.y,
-    });
-  };
-
-  const handleMouseUp = () => setDragging(false);
-
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragging) return;
+      setPosition({
+        x: e.clientX - dragOffset.current.x,
+        y: e.clientY - dragOffset.current.y,
+      });
+    };
+
+    const handleMouseUp = () => setDragging(false);
+
     if (dragging) {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
@@ -55,13 +54,13 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     }
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [dragging]);
 
-  // Resize
   const handleResize = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     const startX = e.clientX;
@@ -70,8 +69,8 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     const startHeight = height;
 
     const doResize = (event: MouseEvent) => {
-      let newWidth = Math.max(300, startWidth + (event.clientX - startX));
-      let newHeight = Math.max(200, startHeight + (event.clientY - startY));
+      const newWidth = Math.max(300, startWidth + (event.clientX - startX));
+      const newHeight = Math.max(200, startHeight + (event.clientY - startY));
       setWidth(newWidth);
       setHeight(newHeight);
     };
@@ -86,6 +85,7 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
   };
 
   const exportImage = async () => {
+    if (typeof window === "undefined") return; // Prevent server-side crash
     try {
       const data = await canvasRef.current?.exportImage("png");
       if (!data) return;
@@ -109,7 +109,7 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div
-      className="fixed z-[1000] bg-black bg-opacity-90 rounded shadow-xl"
+      className="fixed z-[1000] bg-black/90 rounded shadow-xl"
       style={{
         top: position.y,
         left: position.x,
