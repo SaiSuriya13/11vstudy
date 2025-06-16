@@ -1,16 +1,18 @@
 "use client";
 
-import React from "react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import {
-  X, Save, RotateCcw, Trash2, Lock, Unlock,
+  X,
+  Save,
+  RotateCcw,
+  Trash2,
+  Lock,
+  Unlock,
 } from "lucide-react";
 
 const Whiteboard = ({ onClose }: { onClose: () => void }) => {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-  const whiteboardRef = useRef<HTMLDivElement>(null);
-
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [dragging, setDragging] = useState(false);
   const [locked, setLocked] = useState(false);
@@ -18,7 +20,6 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
 
   const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(500);
-
   const [strokeColor, setStrokeColor] = useState("black");
   const [isEraser, setIsEraser] = useState(false);
 
@@ -26,8 +27,8 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     canvasRef.current?.eraseMode(false);
   }, []);
 
-  // Drag
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Drag Functions
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (locked) return;
     setDragging(true);
     dragOffset.current = {
@@ -61,7 +62,7 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
   }, [dragging]);
 
   // Resize
-  const handleResize = (e: React.MouseEvent) => {
+  const handleResize = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     const startX = e.clientX;
     const startY = e.clientY;
@@ -69,10 +70,8 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     const startHeight = height;
 
     const doResize = (event: MouseEvent) => {
-      let newWidth = startWidth + (event.clientX - startX);
-      let newHeight = startHeight + (event.clientY - startY);
-      newWidth = Math.max(300, newWidth);
-      newHeight = Math.max(200, newHeight);
+      let newWidth = Math.max(300, startWidth + (event.clientX - startX));
+      let newHeight = Math.max(200, startHeight + (event.clientY - startY));
       setWidth(newWidth);
       setHeight(newHeight);
     };
@@ -86,7 +85,6 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     window.addEventListener("mouseup", stopResize);
   };
 
-  // Controls
   const exportImage = async () => {
     try {
       const data = await canvasRef.current?.exportImage("png");
@@ -111,8 +109,7 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div
-      ref={whiteboardRef}
-      className="fixed z-[1000] bg-black bg-opacity-90 rounded shadow-lg"
+      className="fixed z-[1000] bg-black bg-opacity-90 rounded shadow-xl"
       style={{
         top: position.y,
         left: position.x,
@@ -124,12 +121,15 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-2 bg-gray-800 text-white cursor-move select-none"
+        className="flex items-center justify-between px-4 py-2 bg-gray-800 text-white cursor-move"
         onMouseDown={handleMouseDown}
       >
         <span className="text-sm font-semibold">✏️ VSTUDY Whiteboard</span>
         <div className="flex gap-2">
-          <button onClick={() => setLocked((prev) => !prev)} title={locked ? "Unlock drag" : "Lock drag"}>
+          <button
+            onClick={() => setLocked((prev) => !prev)}
+            title={locked ? "Unlock drag" : "Lock drag"}
+          >
             {locked ? <Unlock size={16} /> : <Lock size={16} />}
           </button>
           <button onClick={onClose} title="Close whiteboard">
@@ -145,6 +145,7 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
           style={{
             border: "2px solid #ccc",
             backgroundColor: "#000",
+            boxShadow: "inset 0 0 8px #111",
           }}
           width={`${width}px`}
           height={`${height * 0.75}px`}
@@ -177,13 +178,22 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
           </button>
         </div>
         <div className="flex gap-2">
-          <button onClick={exportImage} className="bg-green-600 hover:bg-green-700 px-2 py-1 rounded">
+          <button
+            onClick={exportImage}
+            className="bg-green-600 hover:bg-green-700 px-2 py-1 rounded"
+          >
             <Save size={14} className="inline" /> Save
           </button>
-          <button onClick={undo} className="bg-yellow-600 hover:bg-yellow-700 px-2 py-1 rounded">
+          <button
+            onClick={undo}
+            className="bg-yellow-600 hover:bg-yellow-700 px-2 py-1 rounded"
+          >
             <RotateCcw size={14} className="inline" /> Undo
           </button>
-          <button onClick={clearCanvas} className="bg-gray-600 hover:bg-gray-700 px-2 py-1 rounded">
+          <button
+            onClick={clearCanvas}
+            className="bg-gray-600 hover:bg-gray-700 px-2 py-1 rounded"
+          >
             <Trash2 size={14} className="inline" /> Clear
           </button>
         </div>
@@ -192,7 +202,7 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
       {/* Resize Handle */}
       <div
         onMouseDown={handleResize}
-        className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize bg-white"
+        className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize bg-white border border-gray-700"
         title="Resize whiteboard"
       />
     </div>
