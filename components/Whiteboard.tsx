@@ -13,8 +13,6 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [dragging, setDragging] = useState(false);
   const [locked, setLocked] = useState(false);
-  // Remove minimize state entirely
-
   const dragOffset = useRef({ x: 0, y: 0 });
 
   const [width, setWidth] = useState(800);
@@ -24,11 +22,10 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
   const [isEraser, setIsEraser] = useState(false);
 
   useEffect(() => {
-    // Disable eraser on mount, so default mode is draw with white
     canvasRef.current?.eraseMode(false);
   }, []);
 
-  // Drag Handling
+  // Drag
   const handleMouseDown = (e: React.MouseEvent) => {
     if (locked) return;
     setDragging(true);
@@ -62,7 +59,7 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     };
   }, [dragging]);
 
-  // Resize Handling
+  // Resize
   const handleResize = (e: React.MouseEvent) => {
     e.preventDefault();
     const startX = e.clientX;
@@ -73,11 +70,8 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
     const doResize = (event: MouseEvent) => {
       let newWidth = startWidth + (event.clientX - startX);
       let newHeight = startHeight + (event.clientY - startY);
-
-      // Minimum sizes so it never gets too small
       newWidth = Math.max(300, newWidth);
       newHeight = Math.max(200, newHeight);
-
       setWidth(newWidth);
       setHeight(newHeight);
     };
@@ -137,7 +131,6 @@ const Whiteboard = ({ onClose }: { onClose: () => void }) => {
           <button onClick={() => setLocked((prev) => !prev)} title={locked ? "Unlock drag" : "Lock drag"}>
             {locked ? <Unlock size={16} /> : <Lock size={16} />}
           </button>
-          {/* Removed minimize button */}
           <button onClick={onClose} title="Close whiteboard">
             <X size={16} />
           </button>

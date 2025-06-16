@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
@@ -41,6 +41,7 @@ const WelcomePage = () => {
       >
         {/* Start Studying Button */}
         <button
+          type="button"
           onClick={() => {
             if (isSignedIn) {
               router.push("/home");
@@ -70,6 +71,7 @@ const WelcomePage = () => {
 
         {/* Learn More Button */}
         <button
+          type="button"
           onClick={() => router.push("/learn-more")}
           className="group relative cursor-pointer border-none bg-transparent p-0 font-mono text-base font-light uppercase outline-none"
         >
@@ -82,6 +84,7 @@ const WelcomePage = () => {
 
         {/* About Us Button */}
         <button
+          type="button"
           onClick={() => router.push("/about")}
           className="group relative cursor-pointer border-none bg-transparent p-0 font-mono text-base font-light uppercase outline-none"
         >

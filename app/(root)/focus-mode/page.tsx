@@ -21,7 +21,7 @@ const FocusMode = () => {
   const [achievement, setAchievement] = useState("");
   const [customMinutes, setCustomMinutes] = useState("");
 
-  // Load audio on mount
+  // Initialize audio element on mount
   useEffect(() => {
     const audio = new Audio("/media/focus-music.mp3");
     audio.loop = true;
@@ -30,10 +30,11 @@ const FocusMode = () => {
     return () => {
       audio.pause();
       audio.currentTime = 0;
+      audioRef.current = null;
     };
   }, []);
 
-  // Manage audio play/pause state
+  // Play or pause audio based on state
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !isStarted) return;
@@ -45,7 +46,7 @@ const FocusMode = () => {
     }
   }, [isAudioPlaying, isStarted]);
 
-  // Timer countdown
+  // Countdown timer effect
   useEffect(() => {
     if (timeLeft > 0 && isStarted) {
       const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
@@ -69,7 +70,7 @@ const FocusMode = () => {
   };
 
   const handleCustomStart = () => {
-    const mins = parseInt(customMinutes);
+    const mins = parseInt(customMinutes, 10);
     if (!isNaN(mins) && mins > 0) {
       handleStartFocus(mins * 60);
     } else {
@@ -152,7 +153,7 @@ const FocusMode = () => {
               value={customMinutes}
               onChange={(e) => setCustomMinutes(e.target.value)}
               className="rounded-md px-4 py-2 text-black"
-              min="1"
+              min={1}
             />
             <Button className="bg-teal-600 hover:bg-teal-700" onClick={handleCustomStart}>
               Start Custom Session

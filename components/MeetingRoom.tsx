@@ -22,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import Loader from "@/components/Loader";
 import EndCallButton from "@/components/EndCallButton";
 import DistractionDetector from "@/components/DistractionDetector";
@@ -35,6 +36,8 @@ import {
   Window,
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
+
+import "stream-chat-react/dist/css/v2/index.css";
 
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
@@ -51,17 +54,14 @@ const MeetingRoom = () => {
   const [showWhiteboard, setShowWhiteboard] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [channel, setChannel] = useState<any>(null);
-
+  const [userId, setUserId] = useState<string>("");
   const chatClientRef = useRef<StreamChat | null>(null);
 
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
 
-  // Store userId in state or localStorage to keep stable identity
-  const [userId, setUserId] = useState<string>("");
-
+  // Generate or fetch local user ID
   useEffect(() => {
-    // Initialize userId once per session
     let storedUserId = localStorage.getItem("stream_user_id");
     if (!storedUserId) {
       storedUserId = `guest-${Math.random().toString(36).substring(2, 10)}`;
@@ -70,41 +70,57 @@ const MeetingRoom = () => {
     setUserId(storedUserId);
   }, []);
 
+  // Setup Stream Chat client
   useEffect(() => {
-    if (!userId) return; // wait until userId is set
+    if (!userId) return;
 
     const setupChat = async () => {
       try {
-        const client = StreamChat.getInstance(apiKey);
-        chatClientRef.current = client;
+        const res = await fetch("/api/chat/token", {
+          method: "POST",
+          body: JSON.stringify({ userId }),
+        });
 
-        // Connect user with dev token (only for dev/testing, use real auth token in production)
+        const { token } = await res.json();
+
+        const client = StreamChat.getInstance(apiKey);
+
+        if (chatClientRef.current) {
+          await chatClientRef.current.disconnectUser();
+        }
+
         await client.connectUser(
-          { id: userId, name: "Guest" },
-          client.devToken(userId)
+          {
+            id: userId,
+            name: userId.startsWith("guest") ? "Guest User" : userId,
+          },
+          token
         );
 
-        // Use meetingId as channel ID, make sure user is member
         const newChannel = client.channel("messaging", `meeting-${meetingId}`, {
           name: "Meeting Chat",
-          members: [userId], // Add current user as member
+          members: [userId],
         });
 
         await newChannel.watch();
+
+        chatClientRef.current = client;
         setChannel(newChannel);
       } catch (error) {
-        console.error("[Chat] Error initializing chat:", error);
+        console.error("[StreamChat] Error:", error);
       }
     };
 
     setupChat();
 
     return () => {
-      if (chatClientRef.current) {
-        chatClientRef.current.disconnectUser().then(() => {
+      const cleanup = async () => {
+        if (chatClientRef.current) {
+          await chatClientRef.current.disconnectUser();
           chatClientRef.current = null;
-        });
-      }
+        }
+      };
+      cleanup();
     };
   }, [userId, meetingId]);
 
@@ -123,7 +139,6 @@ const MeetingRoom = () => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
-      {/* Distraction Detector */}
       <div className="absolute right-4 top-4 z-50">
         <DistractionDetector />
       </div>
@@ -133,44 +148,39 @@ const MeetingRoom = () => {
           <CallLayout />
         </div>
 
-        {/* Participants */}
         {showParticipants && (
           <div className="absolute right-4 top-20 z-50 h-[calc(100vh-140px)] bg-[#0f0f0f] w-[300px] rounded-xl overflow-auto">
             <CallParticipantsList onClose={() => setShowParticipants(false)} />
           </div>
         )}
 
-        {/* Chat */}
         {showChat && channel && chatClientRef.current && (
-          <div className="absolute right-4 top-20 z-50 h-[calc(100vh-140px)] w-[300px] bg-[#111] rounded-xl overflow-hidden flex flex-col">
+          <div className="absolute right-4 top-20 z-50 h-[calc(100vh-140px)] w-[350px] bg-gradient-to-br from-[#1c1f24] to-[#111] rounded-xl shadow-xl overflow-hidden flex flex-col border border-[#2f2f2f]">
             <Chat client={chatClientRef.current} theme="str-chat__theme-dark">
               <Channel channel={channel}>
                 <Window>
-                  <MessageList />
-                  <MessageInput />
+                  <MessageList
+                    hideDeletedMessages
+                    messageActions={["react", "reply", "edit", "delete"]}
+                  />
+                  <MessageInput
+                    noFiles
+                    emojiPicker={true}
+                    additionalTextareaProps={{
+                      className:
+                        "bg-[#1f1f1f] text-white border-none focus:ring-0",
+                    }}
+                  />
                 </Window>
               </Channel>
             </Chat>
-            <button
-              className="bg-blue-600 text-white p-2 mt-1 rounded"
-              onClick={async () => {
-                if (channel) {
-                  await channel.sendMessage({ text: "Hello from debug!" });
-                  console.log("Sent test message");
-                }
-              }}
-            >
-              Send Test Message
-            </button>
           </div>
         )}
       </div>
 
-      {/* Bottom Controls */}
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5 z-50">
         <CallControls onLeave={() => router.push("/home")} />
 
-        {/* Layout Switcher */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
@@ -189,35 +199,32 @@ const MeetingRoom = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Participants Button */}
         <button onClick={() => setShowParticipants((prev) => !prev)}>
           <div className="rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
             <Users size={20} />
           </div>
         </button>
 
-        {/* Whiteboard Button */}
         <button onClick={() => setShowWhiteboard((prev) => !prev)}>
           <div className="rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
             <Pencil size={20} />
           </div>
         </button>
 
-        {/* Chat Toggle Button */}
         <button onClick={() => setShowChat((prev) => !prev)}>
           <div className="rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
             <MessageSquareText size={20} />
           </div>
         </button>
 
-        {/* End Call */}
         {!isPersonalRoom && (
           <EndCallButton onLeave={() => router.push("/home")} />
         )}
       </div>
 
-      {/* Whiteboard */}
-      {showWhiteboard && <Whiteboard onClose={() => setShowWhiteboard(false)} />}
+      {showWhiteboard && (
+        <Whiteboard onClose={() => setShowWhiteboard(false)} />
+      )}
     </section>
   );
 };
