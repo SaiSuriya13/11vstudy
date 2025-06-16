@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import {
