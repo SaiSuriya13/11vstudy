@@ -3,7 +3,12 @@
 import { useRouter } from "next/navigation";
 import React from "react";
 import { motion } from "framer-motion";
-import { FaLinkedin, FaInstagram, FaGithub, FaArrowLeft } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaGithub,
+  FaInstagram,
+  FaLinkedin,
+} from "react-icons/fa";
 
 const creators = [
   {
@@ -52,7 +57,11 @@ const cardVariants = {
 };
 
 const iconVariants = {
-  hover: { scale: 1.3, color: "#fff", transition: { repeat: Infinity, duration: 0.8 } },
+  hover: {
+    scale: 1.3,
+    color: "#fff",
+    transition: { repeat: Infinity, duration: 0.8 },
+  },
 };
 
 const AboutPage: React.FC = () => {
@@ -62,13 +71,21 @@ const AboutPage: React.FC = () => {
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 p-8 text-center text-white">
       {/* Floating Background Blobs */}
       <motion.div
-        className="absolute top-20 left-10 size-40 rounded-full bg-blue-500 opacity-20 blur-3xl"
-        animate={{ scale: [1, 1.3, 1], rotate: [0, 20, 0], borderRadius: ["20%", "40%", "20%"] }}
+        className="absolute top-20 left-10 h-40 w-40 rounded-full bg-blue-500 opacity-20 blur-3xl"
+        animate={{
+          scale: [1, 1.3, 1],
+          rotate: [0, 20, 0],
+          borderRadius: ["20%", "40%", "20%"],
+        }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-32 right-16 size-48 rounded-full bg-green-600 opacity-20 blur-3xl"
-        animate={{ scale: [1, 1.2, 1], rotate: [0, -20, 0], borderRadius: ["30%", "50%", "30%"] }}
+        className="absolute bottom-32 right-16 h-48 w-48 rounded-full bg-green-600 opacity-20 blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          rotate: [0, -20, 0],
+          borderRadius: ["30%", "50%", "30%"],
+        }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
 
@@ -76,7 +93,7 @@ const AboutPage: React.FC = () => {
       <motion.h1
         initial={{ opacity: 0, y: -60 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut" }}
+        transition={{ duration: 1 }}
         className="mb-8 max-w-md bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-lg sm:text-6xl"
       >
         Meet the Creators
@@ -86,76 +103,77 @@ const AboutPage: React.FC = () => {
       <motion.p
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
+        transition={{ duration: 1, delay: 0.4 }}
         className="mb-12 max-w-xl text-lg text-gray-300 sm:text-xl"
       >
         This Virtual Study Room was built with passion by{" "}
         <span className="font-semibold text-blue-400">Sai Suriya</span> and{" "}
-        <span className="font-semibold text-green-400">Manigandan</span> to help students and professionals stay focused and collaborate effectively.
+        <span className="font-semibold text-green-400">Manigandan</span> to help
+        students and professionals stay focused and collaborate effectively.
       </motion.p>
 
-      {/* Creator Cards */}
+      {/* Cards */}
       <motion.section
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="flex flex-col gap-12 md:flex-row md:gap-16"
       >
-        {creators.map(({ name, month, date, bgColor, linkedin, instagram, github, iconColor }) => (
-          <motion.article
-            key={name}
-            variants={cardVariants}
-            whileHover="hover"
-            className="relative w-72 cursor-pointer rounded-xl shadow-xl ring-1 ring-white/10 backdrop-blur-md"
-            aria-label={`Profile of ${name}`}
-          >
-            {/* Date Box */}
-            <div className="absolute -top-6 left-4 size-16 flex flex-col items-center justify-center rounded-r-xl bg-white/20 font-mono text-xl font-bold text-white backdrop-blur-sm shadow-lg">
-              <span>{month}</span>
-              <span>{date}</span>
-            </div>
-
-            {/* Content Box */}
-            <div className={`${bgColor} rounded-xl p-8 pt-14 text-white`}>
-              <h2 className="mb-5 text-3xl font-extrabold drop-shadow-lg">{name}</h2>
-              <div className={`flex justify-center gap-8 text-4xl ${iconColor}`}>
-                <motion.a
-                  href={linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${name} LinkedIn`}
-                  variants={iconVariants}
-                  whileHover="hover"
-                  className="rounded-full p-2 transition-colors duration-300 hover:text-white"
-                >
-                  <FaLinkedin />
-                </motion.a>
-                <motion.a
-                  href={instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${name} Instagram`}
-                  variants={iconVariants}
-                  whileHover="hover"
-                  className="rounded-full p-2 transition-colors duration-300 hover:text-white"
-                >
-                  <FaInstagram />
-                </motion.a>
-                <motion.a
-                  href={github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${name} GitHub`}
-                  variants={iconVariants}
-                  whileHover="hover"
-                  className="rounded-full p-2 transition-colors duration-300 hover:text-white"
-                >
-                  <FaGithub />
-                </motion.a>
+        {creators.map(
+          ({ name, month, date, bgColor, linkedin, instagram, github, iconColor }) => (
+            <motion.article
+              key={name}
+              variants={cardVariants}
+              whileHover="hover"
+              className="relative w-72 cursor-pointer rounded-xl shadow-xl ring-1 ring-white/10 backdrop-blur-md"
+              aria-label={`Profile of ${name}`}
+            >
+              <div className="absolute -top-6 left-4 flex h-16 w-16 flex-col items-center justify-center rounded-tr-xl rounded-br-xl bg-white/20 font-mono text-xl font-bold text-white backdrop-blur-sm shadow-lg">
+                <span>{month}</span>
+                <span>{date}</span>
               </div>
-            </div>
-          </motion.article>
-        ))}
+
+              <div className={`${bgColor} rounded-xl p-8 pt-14 text-white`}>
+                <h2 className="mb-5 text-3xl font-extrabold drop-shadow-lg">{name}</h2>
+                <div className={`flex justify-center gap-8 text-4xl ${iconColor}`}>
+                  <motion.a
+                    href={linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variants={iconVariants}
+                    whileHover="hover"
+                    aria-label={`${name} LinkedIn`}
+                    className="rounded-full p-2 transition-colors duration-300 hover:text-white"
+                  >
+                    {React.createElement(FaLinkedin)}
+                  </motion.a>
+                  <motion.a
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variants={iconVariants}
+                    whileHover="hover"
+                    aria-label={`${name} Instagram`}
+                    className="rounded-full p-2 transition-colors duration-300 hover:text-white"
+                  >
+                    {React.createElement(FaInstagram)}
+                  </motion.a>
+                  <motion.a
+                    href={github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variants={iconVariants}
+                    whileHover="hover"
+                    aria-label={`${name} GitHub`}
+                    className="rounded-full p-2 transition-colors duration-300 hover:text-white"
+                  >
+                    {React.createElement(FaGithub)}
+                  </motion.a>
+                </div>
+              </div>
+            </motion.article>
+          )
+        )}
       </motion.section>
 
       {/* Back Button */}
@@ -165,9 +183,7 @@ const AboutPage: React.FC = () => {
         transition={{ duration: 0.8, delay: 1.8 }}
       >
         <button
-          type="button"
           onClick={() => router.push("/welcome")}
-          aria-label="Back to Welcome Page"
           className="relative mt-16 inline-flex items-center overflow-hidden rounded-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-8 py-3 text-lg font-semibold text-white shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
         >
           <span className="mr-3 text-xl">
