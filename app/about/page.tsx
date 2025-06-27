@@ -62,12 +62,12 @@ const AboutPage: React.FC = () => {
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 p-8 text-center text-white">
       {/* Floating Background Blobs */}
       <motion.div
-        className="absolute top-20 left-10 h-40 w-40 rounded-full bg-blue-500 opacity-20 blur-3xl"
+        className="absolute top-20 left-10 size-40 rounded-full bg-blue-500 opacity-20 blur-3xl"
         animate={{ scale: [1, 1.3, 1], rotate: [0, 20, 0], borderRadius: ["20%", "40%", "20%"] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-32 right-16 h-48 w-48 rounded-full bg-green-600 opacity-20 blur-3xl"
+        className="absolute bottom-32 right-16 size-48 rounded-full bg-green-600 opacity-20 blur-3xl"
         animate={{ scale: [1, 1.2, 1], rotate: [0, -20, 0], borderRadius: ["30%", "50%", "30%"] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -110,7 +110,7 @@ const AboutPage: React.FC = () => {
             aria-label={`Profile of ${name}`}
           >
             {/* Date Box */}
-            <div className="absolute -top-6 left-4 flex h-16 w-16 flex-col items-center justify-center rounded-tr-xl rounded-br-xl bg-white/20 font-mono text-xl font-bold text-white backdrop-blur-sm shadow-lg">
+            <div className="absolute -top-6 left-4 size-16 flex flex-col items-center justify-center rounded-r-xl bg-white/20 font-mono text-xl font-bold text-white backdrop-blur-sm shadow-lg">
               <span>{month}</span>
               <span>{date}</span>
             </div>
@@ -128,7 +128,7 @@ const AboutPage: React.FC = () => {
                   whileHover="hover"
                   className="rounded-full p-2 transition-colors duration-300 hover:text-white"
                 >
-                  {React.createElement(FaLinkedin)}
+                  <FaLinkedin />
                 </motion.a>
                 <motion.a
                   href={instagram}
@@ -139,7 +139,7 @@ const AboutPage: React.FC = () => {
                   whileHover="hover"
                   className="rounded-full p-2 transition-colors duration-300 hover:text-white"
                 >
-                  {React.createElement(FaInstagram)}
+                  <FaInstagram />
                 </motion.a>
                 <motion.a
                   href={github}
@@ -150,7 +150,7 @@ const AboutPage: React.FC = () => {
                   whileHover="hover"
                   className="rounded-full p-2 transition-colors duration-300 hover:text-white"
                 >
-                  {React.createElement(FaGithub)}
+                  <FaGithub />
                 </motion.a>
               </div>
             </div>
