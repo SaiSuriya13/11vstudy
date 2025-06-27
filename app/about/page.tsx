@@ -28,7 +28,6 @@ const creators = [
   },
 ];
 
-// Animation Variants
 const containerVariants = {
   hidden: {},
   visible: {
@@ -129,7 +128,7 @@ const AboutPage: React.FC = () => {
                   whileHover="hover"
                   className="rounded-full p-2 transition-colors duration-300 hover:text-white"
                 >
-                  <FaLinkedin />
+                  {React.createElement(FaLinkedin)}
                 </motion.a>
                 <motion.a
                   href={instagram}
@@ -140,7 +139,7 @@ const AboutPage: React.FC = () => {
                   whileHover="hover"
                   className="rounded-full p-2 transition-colors duration-300 hover:text-white"
                 >
-                  <FaInstagram />
+                  {React.createElement(FaInstagram)}
                 </motion.a>
                 <motion.a
                   href={github}
@@ -151,7 +150,7 @@ const AboutPage: React.FC = () => {
                   whileHover="hover"
                   className="rounded-full p-2 transition-colors duration-300 hover:text-white"
                 >
-                  <FaGithub />
+                  {React.createElement(FaGithub)}
                 </motion.a>
               </div>
             </div>
