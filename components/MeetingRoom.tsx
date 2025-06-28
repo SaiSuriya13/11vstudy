@@ -60,7 +60,6 @@ const MeetingRoom = () => {
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
 
-  // Generate or fetch local user ID
   useEffect(() => {
     let storedUserId = localStorage.getItem("stream_user_id");
     if (!storedUserId) {
@@ -70,7 +69,6 @@ const MeetingRoom = () => {
     setUserId(storedUserId);
   }, []);
 
-  // Setup Stream Chat client
   useEffect(() => {
     if (!userId) return;
 
@@ -97,10 +95,20 @@ const MeetingRoom = () => {
           token
         );
 
-        const newChannel = client.channel("messaging", `meeting-${meetingId}`, {
-          name: "Meeting Chat",
-          members: [userId],
-        });
+        // ✅ FIX: Add correct typing for channel data
+        type CustomChannelData = {
+          name?: string;
+          members: string[];
+        };
+
+        const newChannel = client.channel<CustomChannelData>(
+          "messaging",
+          `meeting-${meetingId}`,
+          {
+            name: "Meeting Chat",
+            members: [userId],
+          }
+        );
 
         await newChannel.watch();
 
@@ -191,7 +199,9 @@ const MeetingRoom = () => {
             {["Grid", "Speaker-Left", "Speaker-Right"].map((item) => (
               <DropdownMenuItem
                 key={item}
-                onClick={() => setLayout(item.toLowerCase() as CallLayoutType)}
+                onClick={() =>
+                  setLayout(item.toLowerCase() as CallLayoutType)
+                }
               >
                 {item}
               </DropdownMenuItem>
