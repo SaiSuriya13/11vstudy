@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft as ArrowLeftIcon } from "react-icons/fa";
 
 export default function AboutPage() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function AboutPage() {
         onClick={() => router.push("/welcome")}
         className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full text-white flex items-center space-x-2 transition"
       >
-        <FaArrowLeft />
+        <ArrowLeftIcon className="w-4 h-4" />
         <span>Back to Welcome Page</span>
       </button>
     </main>
