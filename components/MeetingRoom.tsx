@@ -95,17 +95,17 @@ const MeetingRoom = () => {
           token
         );
 
-        // ✅ FIXED: Removed generic from client.channel()
-        const newChannel = client.channel(
-          "messaging",
-          `meeting-${meetingId}`,
-          {
-            name: "Meeting Chat",
-            members: [userId],
-          }
-        );
+        const newChannel = client.channel("messaging", `meeting-${meetingId}`, {
+          members: [userId],
+        });
 
         await newChannel.watch();
+
+        // ✅ Safe: assign name to local data (not to creation params)
+        newChannel.data = {
+          ...newChannel.data,
+          name: "Meeting Chat",
+        };
 
         chatClientRef.current = client;
         setChannel(newChannel);
