@@ -95,13 +95,8 @@ const MeetingRoom = () => {
           token
         );
 
-        // ✅ FIX: Add correct typing for channel data
-        type CustomChannelData = {
-          name?: string;
-          members: string[];
-        };
-
-        const newChannel = client.channel<CustomChannelData>(
+        // ✅ FIXED: Removed generic from client.channel()
+        const newChannel = client.channel(
           "messaging",
           `meeting-${meetingId}`,
           {
