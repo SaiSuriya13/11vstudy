@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Toast,
@@ -7,15 +7,17 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
-import { forwardRef } from "react";
+} from '@/components/ui/toast';
+import { useToast } from '@/components/ui/use-toast';
+import { forwardRef } from 'react';
+import type { ToastViewportProps } from '@radix-ui/react-toast'; // add this import
+import React from 'react';
 
-// Fix: Ensure ToastViewport is passed a proper ref
-const ToastViewportFixed = forwardRef<HTMLDivElement>((props, ref) => (
+// ✅ Fix: Match the correct ref type for ToastViewport (which renders an <ol>)
+const ToastViewportFixed = forwardRef<HTMLOListElement, ToastViewportProps>((props, ref) => (
   <ToastViewport {...props} ref={ref} />
 ));
-ToastViewportFixed.displayName = "ToastViewportFixed";
+ToastViewportFixed.displayName = 'ToastViewportFixed';
 
 export function Toaster() {
   const { toasts } = useToast();
