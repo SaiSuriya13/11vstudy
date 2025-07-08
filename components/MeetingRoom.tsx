@@ -220,7 +220,7 @@ const MeetingRoom = () => {
         </button>
 
         {!isPersonalRoom && (
-          <EndCallButton onLeave={handleLeave} />
+          <EndCallButton />
         )}
       </div>
 
