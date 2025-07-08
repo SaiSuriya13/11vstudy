@@ -154,27 +154,34 @@ const MeetingRoom = () => {
           </div>
         )}
 
-        {showChat && channel && chatClientRef.current && (
-          <div className="absolute right-4 top-20 z-50 h-[calc(100vh-140px)] w-[350px] bg-gradient-to-br from-[#1c1f24] to-[#111] rounded-xl shadow-xl overflow-hidden flex flex-col border border-[#2f2f2f]">
-            <Chat client={chatClientRef.current} theme="str-chat__theme-dark">
-              <Channel channel={channel}>
-                <Window>
-                  <MessageList
-                    hideDeletedMessages
-                    messageActions={["react", "reply", "edit", "delete"]}
-                  />
-                  <MessageInput
-                    {...({ noFiles: true } as any)}
-                    emojiPicker={true}
-                    additionalTextareaProps={{
-                      className:
-                        "bg-[#1f1f1f] text-white border-none focus:ring-0",
-                    }}
-                  />
-                </Window>
-              </Channel>
-            </Chat>
-          </div>
+        {showChat && (
+          <>
+            {!channel || !chatClientRef.current ? (
+              <div className="absolute right-4 top-20 z-50 w-[350px] h-[calc(100vh-140px)] flex items-center justify-center bg-[#111] text-white rounded-xl shadow-xl border border-[#2f2f2f]">
+                <span className="animate-pulse">Connecting chat...</span>
+              </div>
+            ) : (
+              <div className="absolute right-4 top-20 z-50 h-[calc(100vh-140px)] w-[350px] bg-gradient-to-br from-[#1c1f24] to-[#111] rounded-xl shadow-xl overflow-hidden flex flex-col border border-[#2f2f2f]">
+                <Chat client={chatClientRef.current} theme="str-chat__theme-dark">
+                  <Channel channel={channel}>
+                    <Window>
+                      <MessageList
+                        hideDeletedMessages
+                        messageActions={["react", "reply", "edit", "delete"]}
+                      />
+                      <MessageInput
+                        {...({ noFiles: true } as any)}
+                        emojiPicker={true}
+                        additionalTextareaProps={{
+                          className: "bg-[#1f1f1f] text-white border-none focus:ring-0",
+                        }}
+                      />
+                    </Window>
+                  </Channel>
+                </Chat>
+              </div>
+            )}
+          </>
         )}
       </div>
 
