@@ -1,5 +1,6 @@
 'use client';
 
+import React, { forwardRef } from 'react'; // ✅ Only this one
 import {
   Toast,
   ToastClose,
@@ -9,11 +10,8 @@ import {
   ToastViewport,
 } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
-import { forwardRef } from 'react';
-import type { ToastViewportProps } from '@radix-ui/react-toast'; // add this import
-import React from 'react';
+import type { ToastViewportProps } from '@radix-ui/react-toast';
 
-// ✅ Fix: Match the correct ref type for ToastViewport (which renders an <ol>)
 const ToastViewportFixed = forwardRef<HTMLOListElement, ToastViewportProps>((props, ref) => (
   <ToastViewport {...props} ref={ref} />
 ));
