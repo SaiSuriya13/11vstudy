@@ -100,13 +100,6 @@ const MeetingRoom = () => {
         });
 
         await newChannel.watch();
-
-        // ✅ Safe: assign name to local data (not to creation params)
-        newChannel.data = {
-          ...newChannel.data,
-          name: "Meeting Chat",
-        };
-
         chatClientRef.current = client;
         setChannel(newChannel);
       } catch (error) {
@@ -140,6 +133,10 @@ const MeetingRoom = () => {
     }
   };
 
+  const handleLeave = () => {
+    router.push("/home");
+  };
+
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
       <div className="absolute right-4 top-4 z-50">
@@ -167,7 +164,7 @@ const MeetingRoom = () => {
                     messageActions={["react", "reply", "edit", "delete"]}
                   />
                   <MessageInput
-                    noFiles
+                    {...({ noFiles: true } as any)}
                     emojiPicker={true}
                     additionalTextareaProps={{
                       className:
@@ -182,7 +179,7 @@ const MeetingRoom = () => {
       </div>
 
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5 z-50">
-        <CallControls onLeave={() => router.push("/home")} />
+        <CallControls onLeave={handleLeave} />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -223,7 +220,7 @@ const MeetingRoom = () => {
         </button>
 
         {!isPersonalRoom && (
-          <EndCallButton onLeave={() => router.push("/home")} />
+          <EndCallButton onLeave={handleLeave} />
         )}
       </div>
 
